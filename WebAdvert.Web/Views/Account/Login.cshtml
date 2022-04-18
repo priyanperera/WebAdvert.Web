@@ -1,0 +1,42 @@
+﻿@using WebAdvert.Web.Models.Account
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Login";
+}
+@model LoginViewModel
+<div class="row">
+    <div class="col-md-4">
+        <h4>Login using your email address and password</h4>
+        <h5>
+            <a asp-controller="Account" asp-action="Signup">
+                If you are not a member you can sign up here
+            </a>
+        </h5>
+        <form method="post" asp-controller="Account" asp-action="Login">
+            <div asp-validation-summary="All" class="alert-danger">
+            </div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RememberMe"></label><br />
+                <input asp-for="RememberMe" />
+            </div>
+
+            <button type="submit" class="btn btn-default">
+                Login
+            </button>
+        </form>
+    </div>
+</div>
