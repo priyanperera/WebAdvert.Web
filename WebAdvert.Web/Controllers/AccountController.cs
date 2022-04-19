@@ -22,7 +22,7 @@ namespace WebAdvert.Web.Controllers
             this.pool = pool;
         }
 
-        public async Task<ActionResult> SignUp()
+        public ActionResult SignUp()
         {
             var model = new SignUpViewModel();
             return View(model);
@@ -108,6 +108,55 @@ namespace WebAdvert.Web.Controllers
                 {
                     ModelState.AddModelError("LoginError", "Email and password do not match");
                 }
+            }
+
+            return View(model);
+        }
+
+        public ActionResult ForgotPassword()
+        {
+            var model = new ForgotPasswordViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user == null || !await userManager.IsEmailConfirmedAsync(user))
+                {
+                    return RedirectToAction("ResetPassword", "Account");
+                }
+
+                await user.ForgotPasswordAsync();
+                return RedirectToAction("ResetPassword", "Account");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult ResetPassword()
+        {
+            var model = new ResetPasswordViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user == null || !await userManager.IsEmailConfirmedAsync(user))
+                {
+                    ModelState.AddModelError("ResetPasswordError", "Error occured resetting password.");
+                    return View(model);
+                }
+
+                await user.ConfirmForgotPasswordAsync(model.Code, model.NewPassword);
+                return RedirectToAction("Login", "Account");
             }
 
             return View(model);
